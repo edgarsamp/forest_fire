@@ -9,7 +9,7 @@ class ForestFire(mesa.Model):
     Simple Forest Fire model.
     """
 
-    def __init__(self, width=100, height=100, density=0.65, temperature=20, variation=5):
+    def __init__(self, width=100, height=100, density=0.65, biomass=5, variation=5):
         """
         Create a new forest fire model.
 
@@ -26,6 +26,7 @@ class ForestFire(mesa.Model):
                 "Fine": lambda m: self.count_type(m, "Fine"),
                 "On Fire": lambda m: self.count_type(m, "On Fire"),
                 "Burned Out": lambda m: self.count_type(m, "Burned Out"),
+                "Survivor": lambda m: self.count_type(m, "Survivor"),
             }
         )
 
@@ -33,7 +34,7 @@ class ForestFire(mesa.Model):
         for (contents, x, y) in self.grid.coord_iter():
             if self.random.random() < density:
                 # Create a 
-                new_tree = TreeCell((x, y), self, rd.randint(temperature-variation, temperature+variation))
+                new_tree = TreeCell((x, y), self, rd.randint(biomass-variation, biomass+variation))
                 # Set all trees in the first column on fire.
                 if x == 0:
                     new_tree.condition = "On Fire"
@@ -44,8 +45,7 @@ class ForestFire(mesa.Model):
         self.running = True
         self.datacollector.collect(self)
     
-    #def calc_temperature(temperature, variation):
-    #    return rd.randint(temperature-variation, temperature+variation)
+
 
     def step(self):
         """
@@ -57,6 +57,10 @@ class ForestFire(mesa.Model):
 
         # Halt if no more fire
         if self.count_type(self, "On Fire") == 0:
+            print("Fine", self.count_type(self, "Fine"))
+            print("On Fire", self.count_type(self, "On Fire"))
+            print("Burned Out", self.count_type(self, "Burned Out"))
+            print("Survivor", self.count_type(self, "Survivor"))
             self.running = False
 
     @staticmethod

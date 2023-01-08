@@ -1,6 +1,5 @@
 import mesa
 
-
 class TreeCell(mesa.Agent):
     """
     A tree cell.
@@ -14,7 +13,7 @@ class TreeCell(mesa.Agent):
     practice to give one to each agent anyway.
     """
 
-    def __init__(self, pos, model, temperature):
+    def __init__(self, pos, model, biomass):
         """
         Create a new tree.
         Args:
@@ -22,7 +21,7 @@ class TreeCell(mesa.Agent):
             model: standard model reference for agent.
         """
         super().__init__(pos, model)
-        self.temperature = temperature
+        self.biomass = max(0, biomass)
         self.pos = pos
         self.condition = "Fine"
 
@@ -31,33 +30,17 @@ class TreeCell(mesa.Agent):
         If the tree is on fire, spread it to fine trees nearby.
         """
         if self.condition == "On Fire":
-            for neighbor in self.model.grid.iter_neighbors(self.pos, True):
+            neighbors = self.model.grid.iter_neighbors(self.pos, True)
+            neighborsConditions = []
+            for neighbor in neighbors:
+                neighborsConditions.append(neighbor.condition)
                 if neighbor.condition == "Fine":
                     neighbor.condition = "On Fire"
-            self.condition = "Burned Out"
 
+            if not ("On Fire" in neighborsConditions):
+                self.condition = "Survivor"
 
-
-class AirCell(mesa.Agent):
-
-    def __init__(self, pos, model, temperature):
-        """
-        Create a new tree.
-        Args:
-            pos: The tree's coordinates on the grid.
-            model: standard model reference for agent.
-        """
-        super().__init__(pos, model)
-        self.temperature = temperature
-        self.pos = pos
-        self.condition = "cold"
-
-    def step(self):
-        """
-        If the tree is on fire, spread it to fine trees nearby.
-        """
-        if self.condition == "On Fire":
-            for neighbor in self.model.grid.iter_neighbors(self.pos, True):
-                if neighbor.condition == "Fine":
-                    neighbor.condition = "On Fire"
-            self.condition = "Burned Out"
+            
+            self.biomass = max(0, self.biomass-1)
+            if self.biomass == 0:
+                self.condition = "Burned Out"
