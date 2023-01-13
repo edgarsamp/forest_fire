@@ -1,6 +1,5 @@
 import mesa
 import random as rd
-
 from .agent import TreeCell
 
 
@@ -26,7 +25,7 @@ class ForestFire(mesa.Model):
                 "Fine": lambda m: self.count_type(m, "Fine"),
                 "On Fire": lambda m: self.count_type(m, "On Fire"),
                 "Burned Out": lambda m: self.count_type(m, "Burned Out"),
-                "Survivor": lambda m: self.count_type(m, "Survivor"),
+                "Partially Burnt": lambda m: self.count_type(m, "Partially Burnt"),
             }
         )
 
@@ -45,8 +44,6 @@ class ForestFire(mesa.Model):
         self.running = True
         self.datacollector.collect(self)
     
-
-
     def step(self):
         """
         Advance the model by one step.
@@ -60,7 +57,7 @@ class ForestFire(mesa.Model):
             print("Fine", self.count_type(self, "Fine"))
             print("On Fire", self.count_type(self, "On Fire"))
             print("Burned Out", self.count_type(self, "Burned Out"))
-            print("Survivor", self.count_type(self, "Survivor"))
+            print("Partially Burnt", self.count_type(self, "Partially Burnt"))
             self.running = False
 
     @staticmethod

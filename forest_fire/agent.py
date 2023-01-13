@@ -8,6 +8,7 @@ class TreeCell(mesa.Agent):
         x, y: Grid coordinates
         condition: Can be "Fine", "On Fire", or "Burned Out"
         unique_id: (x,y) tuple.
+        biomass: Amount of agent biomass
 
     unique_id isn't strictly necessary here, but it's good
     practice to give one to each agent anyway.
@@ -19,6 +20,7 @@ class TreeCell(mesa.Agent):
         Args:
             pos: The tree's coordinates on the grid.
             model: standard model reference for agent.
+            biomass: Amount of agent biomass
         """
         super().__init__(pos, model)
         self.biomass = max(0, biomass)
@@ -27,7 +29,7 @@ class TreeCell(mesa.Agent):
 
     def step(self):
         """
-        If the tree is on fire, spread it to fine trees nearby.
+        If the tree is on fire, spread it to nearby trees and reduce their biomass by 1. If nearby trees are not on fire, put out the fire on the tree.
         """
         if self.condition == "On Fire":
             neighbors = self.model.grid.iter_neighbors(self.pos, True)
@@ -38,7 +40,7 @@ class TreeCell(mesa.Agent):
                     neighbor.condition = "On Fire"
 
             if not ("On Fire" in neighborsConditions):
-                self.condition = "Survivor"
+                self.condition = "Partially Burnt"
 
             
             self.biomass = max(0, self.biomass-1)

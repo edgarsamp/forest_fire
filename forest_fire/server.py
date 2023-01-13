@@ -2,8 +2,8 @@ import mesa
 
 from .model import ForestFire
 
-COLORS = {"Fine": "#00AA00", "On Fire": "#880000", "Burned Out": "#000000", "Survivor": "#ffa600"}
-TREE_COLORS = {"Fine": "#00AA00", "On Fire": "#880000",  "Survivor": "#ffa600"}
+COLORS = {"Fine": "#00AA00", "On Fire": "#880000", "Burned Out": "#000000", "Partially Burnt": "#ffa600"}
+TREE_COLORS = {"Fine": "#00AA00", "On Fire": "#880000",  "Partially Burnt": "#ffa600"}
 
 def forest_fire_portrayal(tree):
     if tree is None:
