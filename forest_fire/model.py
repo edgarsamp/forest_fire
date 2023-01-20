@@ -1,13 +1,11 @@
+from forest_fire.agent import TreeCell
 import mesa
 import random as rd
-from .agent import TreeCell
-
 
 class ForestFire(mesa.Model):
     """
     Simple Forest Fire model.
     """
-
     def __init__(self, width=100, height=100, density=0.65, biomass=5, variation=5):
         """
         Create a new forest fire model.
@@ -19,13 +17,15 @@ class ForestFire(mesa.Model):
         # Set up model objects
         self.schedule = mesa.time.RandomActivation(self)
         self.grid = mesa.space.Grid(width, height, torus=False)
+        self.end_check = False
 
         self.datacollector = mesa.DataCollector(
-            {
+            model_reporters={
                 "Fine": lambda m: self.count_type(m, "Fine"),
                 "On Fire": lambda m: self.count_type(m, "On Fire"),
                 "Burned Out": lambda m: self.count_type(m, "Burned Out"),
                 "Partially Burnt": lambda m: self.count_type(m, "Partially Burnt"),
+                "Alived": lambda m: self.count_types(m, "Partially Burnt", "Fine"),
             }
         )
 
@@ -49,16 +49,17 @@ class ForestFire(mesa.Model):
         Advance the model by one step.
         """
         self.schedule.step()
-        # collect data
-        self.datacollector.collect(self)
+
+        if self.end_check:
+            self.running = False
 
         # Halt if no more fire
         if self.count_type(self, "On Fire") == 0:
-            print("Fine", self.count_type(self, "Fine"))
-            print("On Fire", self.count_type(self, "On Fire"))
-            print("Burned Out", self.count_type(self, "Burned Out"))
-            print("Partially Burnt", self.count_type(self, "Partially Burnt"))
-            self.running = False
+            self.end_check = True
+
+        # collect data
+        self.datacollector.collect(self)
+
 
     @staticmethod
     def count_type(model, tree_condition):
@@ -68,5 +69,16 @@ class ForestFire(mesa.Model):
         count = 0
         for tree in model.schedule.agents:
             if tree.condition == tree_condition:
+                count += 1
+        return count
+
+    @staticmethod
+    def count_types(model, tree_condition, tree_condition2):
+        """
+        Helper method to count trees in a given condition in a given model.
+        """
+        count = 0
+        for tree in model.schedule.agents:
+            if tree.condition == tree_condition or tree.condition == tree_condition2:
                 count += 1
         return count

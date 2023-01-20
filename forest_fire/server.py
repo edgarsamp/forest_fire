@@ -1,5 +1,4 @@
 import mesa
-
 from .model import ForestFire
 
 COLORS = {"Fine": "#00AA00", "On Fire": "#880000", "Burned Out": "#000000", "Partially Burnt": "#ffa600"}
@@ -14,7 +13,6 @@ def forest_fire_portrayal(tree):
     portrayal["y"] = y
     portrayal["Color"] = COLORS[tree.condition]
     return portrayal
-
 
 canvas_element = mesa.visualization.CanvasGrid(
     forest_fire_portrayal, 100, 100, 500, 500
@@ -39,5 +37,8 @@ model_params = {
 }
 
 server = mesa.visualization.ModularServer(
-    ForestFire, [canvas_element, tree_chart, tree_bar_chart, pie_chart], "Forest Fire", model_params
+    ForestFire,
+    [canvas_element, tree_chart, tree_bar_chart, pie_chart],
+    "Forest Fire",
+    model_params,
 )

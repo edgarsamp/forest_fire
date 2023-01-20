@@ -2,16 +2,20 @@
 
 ## Resumo
 
-Para criar este modelo foi utilizado como base o exemplo [forest fire model](https://github.com/projectmesa/mesa-examples/tree/main/examples/forest_fire) do framework Mesa.
+Para criar este modelo foi utilizado como base o exemplo [forest fire model](https://github.com/projectmesa/mesa-examples/tree/main/examples/forest_fire) do framework Mesa e adicionado . 
 
 
 
-## How to Run
+## Como executar
 
-To run the model interactively, run ``mesa runserver`` in this directory. e.g.
+Para a execução do programa é necessário ter o Python 3.8 ou maior instalado em seu computador.
+
+
+
+Primeiramente é necessario instalar os requisitos, para isso execute:
 
 ```
-    $ mesa runserver
+    pip install -r requirements.txt
 ```
 
 Then open your browser to [http://127.0.0.1:8521/](http://127.0.0.1:8521/) and press Reset, then Run.
